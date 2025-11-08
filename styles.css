@@ -1,0 +1,321 @@
+/* --- Basic Setup & Variables --- */
+:root {
+    --primary-color: #4CAF50; /* A fresh, friendly green */
+    --primary-hover: #45a049;
+    --google-blue: #4285F4;
+    --google-hover: #357ae8;
+    --text-color: #333;
+    --text-light: #555;
+    --bg-color: #f8f9fa; /* A very light gray for the background */
+    --surface-color: #ffffff; /* For cards, modals, etc. */
+    --border-color: #e0e0e0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: grid;
+    grid-template-columns: 1fr 320px; /* Main content and Cart side-by-side */
+    grid-template-rows: auto 1fr;
+    grid-template-areas: 
+        "header header"
+        "main   cart";
+    height: 100vh;
+    overflow: hidden; /* Prevent body scrolling */
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* --- Main Layout: Header, Main, Cart --- */
+header {
+    grid-area: header;
+    background-color: var(--surface-color);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+header .logo h1 {
+    margin: 0;
+    color: var(--primary-color);
+}
+header .logo p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+main {
+    grid-area: main;
+    padding: 2rem;
+    overflow-y: auto; /* Allow this main section to scroll */
+}
+
+#cart-view {
+    grid-area: cart;
+    background-color: var(--surface-color);
+    padding: 1.5rem;
+    border-left: 1px solid var(--border-color);
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+#cart-view h2 {
+    margin-top: 0;
+    color: var(--primary-color);
+}
+.payment-methods img {
+    display: block;
+    margin: 1rem auto;
+}
+
+/* --- Reusable Components: Buttons & Forms --- */
+button {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+button:hover {
+    background-color: var(--primary-hover);
+}
+
+form {
+    background: #fdfdfd;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-sizing: border-box; /* Crucial for padding */
+    font-size: 1rem;
+}
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+/* --- Customer View: Product Grid --- */
+.filter-bar {
+    margin-bottom: 1.5rem;
+}
+#product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+.product-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.product-card img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 4px;
+    background-color: #eee;
+}
+.product-card h3 { margin: 0.75rem 0 0.25rem; }
+.product-card p { margin: 0.2rem 0; font-size: 0.9rem; color: var(--text-light); }
+.product-card .price { font-weight: bold; color: var(--primary-color); font-size: 1.1rem; }
+.product-card .harvest-time { font-style: italic; font-size: 0.8rem; }
+.product-card button { margin-top: auto; /* Pushes button to the bottom */ }
+
+/* --- Farmer Dashboard --- */
+#farmer-view h3 {
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 0.5rem;
+    margin-top: 2rem;
+}
+#farmer-product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* --- Login/Signup Modal --- */
+#login-modal {
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.modal-content {
+    background: var(--surface-color);
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 420px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #aaa;
+    line-height: 1;
+}
+.close-btn:hover { color: #333; }
+
+/* Modal Internals */
+.login-tabs { margin-bottom: 1rem; display: flex; }
+.login-tabs button {
+    background-color: #f0f0f0;
+    color: var(--text-color);
+    width: 50%;
+    border-radius: 5px 5px 0 0;
+    border: 1px solid var(--border-color);
+    border-bottom: none;
+}
+.login-tabs button.active {
+    background-color: var(--surface-color);
+    color: var(--primary-color);
+    border-bottom: 2px solid var(--primary-color);
+}
+.login-tabs button:not(.active):hover { background-color: #e9e9e9; }
+
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: var(--google-blue);
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    border: 1px solid transparent;
+    transition: background-color 0.3s;
+}
+.google-btn:hover { background-color: var(--google-hover); }
+.google-btn img {
+    background-color: white;
+    padding: 2px;
+    border-radius: 3px;
+    margin-right: 15px;
+    width: 20px;
+    height: 20px;
+}
+hr.separator {
+    border: 0;
+    height: 1px;
+    background: var(--border-color);
+    margin: 1.5rem 0;
+}
+.toggle-link {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+}
+.toggle-link a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: bold;
+}
+.toggle-link a:hover { text-decoration: underline; }
+
+/* --- Cart View --- */
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.25rem;
+    border-bottom: 1px solid #eee;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 900px) {
+    body {
+        grid-template-columns: 1fr; /* Single column */
+        grid-template-rows: auto 1fr auto; /* Header, Main, Cart */
+        grid-template-areas: 
+            "header"
+            "main"
+            "cart";
+        overflow-y: auto; /* Allow whole body to scroll */
+    }
+    main, #cart-view {
+        overflow-y: visible; /* Remove individual scrolling */
+    }
+    #cart-view {
+        border-left: none;
+        border-top: 2px solid var(--border-color);
+        max-height: 40vh; /* Give cart a max height */
+        overflow-y: auto; /* But allow it to scroll if it gets too long */
+    }
+}
+
+/* Image preview style in the form */
+#image-preview {
+    max-width: 200px;
+    margin-top: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+}
+
+/* Add this to the end of styles.css */
+
+.cart-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.25rem;
+    border-bottom: 1px solid #eee;
+}
+
+/* --- NEW STYLE FOR THE REMOVE BUTTON --- */
+.remove-from-cart-btn {
+    background: none;
+    border: none;
+    color: #cc0000; /* A red color for deletion */
+    font-size: 1.2rem;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 0 5px;
+    line-height: 1;
+}
+
+.remove-from-cart-btn:hover {
+    color: #ff0000;
+}

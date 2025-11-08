@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fresh Valley Enclave</title>
+    <link rel="shortcut icon" href="favicon.png" type="image">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Always-Visible Header -->
+    <header>
+        <div class="logo">
+            <h1>Fresh Valley Enclave</h1>
+            <p>Your Local Harvest Connection</p>
+        </div>
+        <nav>
+            <button id="login-nav-btn">Login / Sign Up</button>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <!-- Customer View (Default View) -->
+        <div id="customer-view">
+            <div class="filter-bar">
+                <h2>Today's Harvest</h2>
+                <input type="text" id="search-bar" placeholder="Search for vegetables...">
+            </div>
+            <div id="product-grid">
+                <!-- Product cards are dynamically inserted here by script.js -->
+            </div>
+        </div>
+
+        <!-- Farmer View (Hidden by default) -->
+        <div id="farmer-view" class="hidden">
+            <h2>Farmer Dashboard</h2>
+            <div class="dashboard-controls">
+                <button id="show-add-product-btn">List New Vegetable</button>
+            </div>
+            <!-- Form to add a new product (initially hidden) -->
+           <form id="add-product-form" class="hidden">
+                <h3>Add Vegetable Details</h3>
+                <input type="text" name="name" placeholder="Vegetable Name" required>
+                <input type="number" step="0.01" name="price" placeholder="Price" required>
+                <select name="unit" required>
+                    <option value="kg">per kg</option>
+                    <option value="bunch">per bunch</option>
+                    <option value="item">per item</option>
+                </select>
+                <input type="number" name="quantity" placeholder="Quantity Available" required>
+                
+                <label for="veg-image-upload">Vegetable Image</label>
+                <input type="file" id="veg-image-upload" name="image" accept="image/*" required>
+                <img id="image-preview" src="#" alt="Image Preview" class="hidden"/>
+
+                <button type="submit">List My Vegetable</button>
+            </form>
+            
+            <h3>My Current Listings</h3>
+            <div id="farmer-product-list">
+                <!-- Farmer's own listed products will appear here -->
+            </div>
+
+            <h3>My Payment Settings</h3>
+            <form id="payment-details-form">
+                <p>Enter your payment information so customers can pay you directly.</p>
+                <label for="upi-id">Your UPI ID (e.g., yourname@oksbi)</label>
+                <input type="text" id="upi-id" name="upiId" placeholder="yourname@okbank">
+                <button type="submit">Save Payment Details</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Login/Signup Modal (Hidden by default) -->
+    <div id="login-modal" class="hidden">
+        <div class="modal-content">
+            <span id="close-modal" class="close-btn">×</span>
+            <div class="login-tabs">
+                <button id="customer-tab-btn" class="active">Customer</button>
+                <button id="farmer-tab-btn">Farmer</button>
+            </div>
+
+            <!-- Google Sign-In Button -->
+            <div class="google-signin-container">
+                <a href="http://localhost:5000/api/auth/google" class="google-btn">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google logo">
+                    Sign in with Google
+                </a>
+            </div>
+            <hr class="separator">
+            
+            <!-- Customer Forms -->
+            <div id="customer-forms">
+                <form id="customer-login-form">
+                    <h3>Customer Login</h3>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                    <p class="toggle-link">Don't have an account? <a href="#" id="show-customer-signup">Sign Up</a></p>
+                </form>
+                <form id="customer-signup-form" class="hidden">
+                    <h3>Customer Sign Up</h3>
+                    <input type="text" name="name" placeholder="Full Name" required>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Create Account</button>
+                    <p class="toggle-link">Already have an account? <a href="#" id="show-customer-login">Sign In</a></p>
+                </form>
+            </div>
+
+            <!-- Farmer Forms -->
+            <div id="farmer-forms" class="hidden">
+                <form id="farmer-login-form">
+                    <h3>Farmer Login</h3>
+                    <input type="email" name="email" placeholder="Email" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <button type="submit">Login</button>
+                    <p class="toggle-link">Don't have an account? <a href="#" id="show-farmer-signup">Sign Up</a></p>
+                </form>
+                <!-- Inside the #login-modal div -->
+<form id="farmer-signup-form" class="hidden">
+    <h3>Farmer Sign Up</h3>
+    <input type="text" name="name" placeholder="Your Full Name" required>
+    <input type="text" name="farmName" placeholder="Farm Name" required>
+    <input type="email" name="email" placeholder="Email" required>
+    
+    <!-- ADD THIS NEW INPUT FIELD -->
+    <input type="tel" name="contactNumber" placeholder="Contact Number (e.g., 9876543210)" required>
+    
+    <input type="password" name="password" placeholder="Password" required>
+    <button type="submit">Create Farm Account</button>
+    <p class="toggle-link">Already have an account? <a href="#" id="show-farmer-login">Sign In</a></p>
+</form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Shopping Cart Sidebar -->
+    <aside id="cart-view">
+        <h2>My Cart</h2>
+        <div id="cart-items">
+            <p>Your cart is empty.</p>
+        </div>
+        <div id="cart-total" class="hidden">
+            <h3>Total: ₹<span id="total-price">0.00</span></h3>
+        </div>
+    </aside>
+
+    <!-- Payment Modal for QR Code Display -->
+    <div id="payment-modal" class="hidden">
+        <div class="modal-content">
+            <span id="close-payment-modal" class="close-btn">×</span>
+            <h3 id="payment-farmer-name">Pay Farmer Name</h3>
+            <p>Use your payment app to scan the QR code or enter the UPI ID below.</p>
+            <div class="payment-info">
+                <div id="qrcode-container" style="display: flex; justify-content: center; margin: 1rem 0;"></div>
+                <p><strong>UPI ID:</strong> <span id="payment-upi-id"></span></p>
+            </div>
+            <button id="payment-complete-btn">I Have Paid</button>
+        </div>
+    </div>
+
+    <!-- Script includes: qrcode.js library first, then our custom script -->
+    <script src="https://cdn.jsdelivr.net/npm/davidshimjs-qrcodejs@0.0.2/qrcode.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

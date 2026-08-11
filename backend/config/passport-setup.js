@@ -2,38 +2,46 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/user.model');
 
-passport.use(new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: '/api/auth/google/callback',
-    proxy: true
-}, async (accessToken, refreshToken, profile, done) => {
-    try {
-        let user = await User.findOne({ googleId: profile.id });
+const isGoogleConfigured = !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
 
-        if (user) {
-            return done(null, user);
-        } else {
-            // Check if user exists by email
-            user = await User.findOne({ email: profile.emails[0].value });
+if (isGoogleConfigured) {
+    passport.use(new GoogleStrategy({
+        clientID: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+        callbackURL: '/api/auth/google/callback',
+        proxy: true
+    }, async (accessToken, refreshToken, profile, done) => {
+        try {
+            let user = await User.findOne({ googleId: profile.id });
+
             if (user) {
-                // User exists, link Google ID
-                user.googleId = profile.id;
-                await user.save();
                 return done(null, user);
             } else {
-                // Create a new user (defaults to customer)
-                const newUser = new User({
-                    googleId: profile.id,
-                    name: profile.displayName,
-                    email: profile.emails[0].value,
-                    role: 'customer' // All Google signups are customers by default
-                });
-                await newUser.save();
-                return done(null, newUser);
+                // Check if user exists by email
+                user = await User.findOne({ email: profile.emails[0].value });
+                if (user) {
+                    // User exists, link Google ID
+                    user.googleId = profile.id;
+                    await user.save();
+                    return done(null, user);
+                } else {
+                    // Create a new user (defaults to customer)
+                    const newUser = new User({
+                        googleId: profile.id,
+                        name: profile.displayName,
+                        email: profile.emails[0].value,
+                        role: 'customer' // All Google signups are customers by default
+                    });
+                    await newUser.save();
+                    return done(null, newUser);
+                }
             }
+        } catch (err) {
+            return done(err, false);
         }
-    } catch (err) {
-        return done(err, false);
-    }
-}));
+    }));
+} else {
+    console.warn('WARNING: Google OAuth credentials (GOOGLE_CLIENT_ID/GOOGLE_CLIENT_SECRET) not set in .env. Google login will be disabled.');
+}
+
+module.exports = { isGoogleConfigured };

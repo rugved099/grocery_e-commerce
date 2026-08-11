@@ -19,7 +19,7 @@ const UserSchema = new mongoose.Schema({
     
     // Farmer-specific payment details
     upiId: { type: String, default: '' },
-   
+    qrCodeImageUrl: { type: String, default: '' },
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

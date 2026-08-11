@@ -59,14 +59,17 @@ document.addEventListener('DOMContentLoaded', () => {
             if (currentUser.role === 'farmer') {
                 customerView.classList.add('hidden');
                 farmerView.classList.remove('hidden');
+                document.getElementById('cart-view').classList.add('hidden');
             } else {
                 customerView.classList.remove('hidden');
                 farmerView.classList.add('hidden');
+                document.getElementById('cart-view').classList.remove('hidden');
             }
         } else {
             loginNavBtn.textContent = 'Login / Sign Up';
             customerView.classList.remove('hidden');
             farmerView.classList.add('hidden');
+            document.getElementById('cart-view').classList.remove('hidden');
         }
     };
 
@@ -300,6 +303,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     productGrid.addEventListener('click', async (e) => {
         if (e.target.classList.contains('add-to-cart-btn')) {
+            if (!token || !currentUser) {
+                alert("Please log in or sign up to add products to your cart.");
+                loginModal.classList.remove('hidden');
+                return;
+            }
             const productId = e.target.dataset.id;
             const productToAdd = allProducts.find(p => p._id === productId);
             if (productToAdd) {
@@ -347,6 +355,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     cartItemsContainer.addEventListener('click', async (e) => {
         if (e.target.classList.contains('pay-farmer-btn')) {
+            if (!token || !currentUser) {
+                alert("Please log in or sign up to proceed with payment.");
+                loginModal.classList.remove('hidden');
+                return;
+            }
             const farmerId = e.target.dataset.farmerId;
             const cartItemFromFarmer = cart.find(item => item.product.farmer._id === farmerId);
             if (!cartItemFromFarmer) return;

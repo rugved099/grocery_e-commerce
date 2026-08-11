@@ -8,6 +8,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const passport = require('passport');
+const fs = require('fs');
+const path = require('path');
 
 // --- Initialize Express App ---
 const app = express();
@@ -16,6 +18,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use(passport.initialize());
+
+// Ensure uploads directory exists on server start
+const uploadsDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+    console.log('Created uploads directory:', uploadsDir);
+}
 
 // This line executes our passport setup file. Now it will find the environment variables.
 require('./config/passport-setup'); 

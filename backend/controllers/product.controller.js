@@ -3,6 +3,12 @@ const Product = require('../models/product.model');
 // Create a product (Farmer only)
 exports.createProduct = async (req, res) => {
     const { name, price, unit, quantity } = req.body;
+    
+    // Check if image file was uploaded
+    if (!req.file) {
+        return res.status(400).json({ msg: 'Please upload an image for the product.' });
+    }
+
     try {
         const newProduct = new Product({
             name,
@@ -14,27 +20,21 @@ exports.createProduct = async (req, res) => {
         });
         const product = await newProduct.save();
         res.status(201).json(product);
-    // NEW, CORRECTED CODE
-} catch (err) {
-    console.error("Product Controller Error:", err.message);
-    // Send a JSON object instead of a string
-    res.status(500).json({ msg: 'Server Error while handling products.' });
-}
+    } catch (err) {
+        console.error("Product Controller Error:", err.message);
+        res.status(500).json({ msg: 'Server Error while handling products.' });
+    }
 };
 
 // Get all products (Public)
-// controllers/product.controller.js
-
-// ... (createProduct function is unchanged) ...
-
 exports.getProducts = async (req, res) => {
     try {
-        // Add 'contactNumber' to the fields being populated
+        // Populate farmer details including name, farmName, upiId, and contactNumber
         const products = await Product.find().sort({ harvestDate: -1 })
-            .populate('farmer', ['name', 'farmName', 'upiId', 'contactNumber']); // <-- UPDATED LINE
+            .populate('farmer', ['name', 'farmName', 'upiId', 'contactNumber']);
         res.json(products);
     } catch (err) {
-        console.error(err.message);
-        res.status(500).send('Server Error');
+        console.error("Get Products Error:", err.message);
+        res.status(500).json({ msg: 'Server Error while fetching products.' });
     }
 };

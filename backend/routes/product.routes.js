@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const auth = require('../middleware/auth.middleware');
-const { createProduct, getProducts } = require('../controllers/product.controller');
+const { createProduct, getProducts, deleteProduct } = require('../controllers/product.controller');
 
 // Multer setup for image uploads
 const storage = multer.diskStorage({
@@ -14,5 +14,6 @@ const upload = multer({ storage: storage });
 // Routes
 router.get('/', getProducts);
 router.post('/', [auth, upload.single('image')], createProduct); // Protected route
+router.delete('/:id', auth, deleteProduct); // Protected route
 
 module.exports = router;

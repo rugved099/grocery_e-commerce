@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { Plus, Check, Settings, Eye, Calendar, Sparkles } from 'lucide-react';
+import { Plus, Check, Settings, Eye, Calendar, Sparkles, Trash2 } from 'lucide-react';
 
 const BACKEND_ORIGIN =import.meta.env.VITE_API_URL;
 
@@ -79,6 +79,20 @@ export default function FarmerDashboard({ currentUser, token, backendUrl, produc
             alert('Failed to save payment settings: ' + (err.response?.data?.msg || err.message));
         } finally {
             setLoadingPayment(false);
+        }
+    };
+
+    const handleDeleteProduct = async (productId) => {
+        if (!window.confirm('Are you sure you want to delete this listing?')) return;
+        
+        try {
+            await axios.delete(`${backendUrl}/products/${productId}`, {
+                headers: { 'x-auth-token': token }
+            });
+            alert('Listing deleted successfully!');
+            onRefreshProducts();
+        } catch (err) {
+            alert('Failed to delete listing: ' + (err.response?.data?.msg || err.message));
         }
     };
 
@@ -225,10 +239,19 @@ export default function FarmerDashboard({ currentUser, token, backendUrl, produc
                                 <div className="listing-info">
                                     <h4>{product.name}</h4>
                                     <p>₹{parseFloat(product.price).toFixed(2)} / {product.unit} | Stock: {product.quantity}</p>
-                                    <p style={{ display: 'flex', alignItems: 'center', gap: '4px', marginTop: '4px', fontSize: '0.75rem', color: 'var(--text-lighter)' }}>
-                                        <Calendar size={12} />
-                                        Listed: {new Date(product.harvestDate).toLocaleDateString()}
-                                    </p>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                                        <p style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', color: 'var(--text-lighter)' }}>
+                                            <Calendar size={12} />
+                                            Listed: {new Date(product.harvestDate).toLocaleDateString()}
+                                        </p>
+                                        <button 
+                                            onClick={() => handleDeleteProduct(product._id)}
+                                            style={{ background: 'none', border: 'none', color: 'var(--danger-color)', cursor: 'pointer', padding: '4px' }}
+                                            title="Delete Listing"
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         ))}

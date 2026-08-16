@@ -231,7 +231,7 @@ export default function FarmerDashboard({ currentUser, token, backendUrl, produc
                     <div className="farmer-listings">
                         {myListings.map(product => (
                             <div className="farmer-listing-card" key={product._id}>
-                                <img src={`${BACKEND_ORIGIN}/${product.image}`} alt={product.name} onError={(e) => {
+                                <img src={product.image?.startsWith('http') ? product.image : `${BACKEND_ORIGIN}/${product.image}`} alt={product.name} onError={(e) => {
                                     e.target.onerror = null;
                                     e.target.src = 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500&auto=format&fit=crop&q=60';
                                 }} />

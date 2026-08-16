@@ -44,8 +44,10 @@ export default function ProductCard({ product, token, backendUrl, onAddToCart, o
         }
     };
 
-    // Get formatted image URL — static files served directly from Express, not via proxy
-    const imageUrl = product.image ? `${BACKEND_ORIGIN}/${product.image}` : '';
+    // Support both local uploads (legacy) and Cloudinary URLs
+    const imageUrl = product.image 
+        ? (product.image.startsWith('http') ? product.image : `${BACKEND_ORIGIN}/${product.image}`) 
+        : '';
 
     return (
         <div className="product-card">

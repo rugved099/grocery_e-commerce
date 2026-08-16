@@ -7,8 +7,7 @@ import CartSidebar from './components/CartSidebar';
 import PaymentModal from './components/PaymentModal';
 import FarmerDashboard from './components/FarmerDashboard';
 
-const BACKEND_URL = '/api';
-
+const BACKEND_URL = `${import.meta.env.VITE_API_URL}/api`;
 export default function App() {
     // Auth States
     const [token, setToken] = useState(localStorage.getItem('token') || '');

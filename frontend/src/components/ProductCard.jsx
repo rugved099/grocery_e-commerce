@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { ShoppingCart, TrendingUp, Calendar, User } from 'lucide-react';
 
-const BACKEND_ORIGIN = 'http://localhost:5000';
+const BACKEND_ORIGIN = import.meta.env.VITE_API_URL;
 
 export default function ProductCard({ product, token, backendUrl, onAddToCart, onLoginRequired }) {
     const [compareText, setCompareText] = useState('Compare National Price');

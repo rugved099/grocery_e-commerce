@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Plus, Check, Settings, Eye, Calendar, Sparkles } from 'lucide-react';
 
-const BACKEND_ORIGIN = 'http://localhost:5000';
+const BACKEND_ORIGIN =import.meta.env.VITE_API_URL;
 
 export default function FarmerDashboard({ currentUser, token, backendUrl, products, onRefreshProducts }) {
     const [showAddForm, setShowAddForm] = useState(false);

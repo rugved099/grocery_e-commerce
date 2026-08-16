@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const BACKEND_ORIGIN = 'http://localhost:5000';
+const BACKEND_ORIGIN = import.meta.env.VITE_API_URL;
 
 export default function AuthModal({ isOpen, onClose, onLoginSuccess, backendUrl }) {
     const [activeTab, setActiveTab] = useState('customer'); // 'customer' or 'farmer'

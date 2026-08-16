@@ -9,9 +9,12 @@ if (isGoogleConfigured) {
         clientID: process.env.GOOGLE_CLIENT_ID,
         clientSecret: process.env.GOOGLE_CLIENT_SECRET,
         callbackURL: '/api/auth/google/callback',
-        proxy: true
-    }, async (accessToken, refreshToken, profile, done) => {
+        proxy: true,
+        passReqToCallback: true
+    }, async (req, accessToken, refreshToken, profile, done) => {
         try {
+            const role = req.query.state || 'customer';
+            
             let user = await User.findOne({ googleId: profile.id });
 
             if (user) {
@@ -22,15 +25,16 @@ if (isGoogleConfigured) {
                 if (user) {
                     // User exists, link Google ID
                     user.googleId = profile.id;
+                    // If user was created manually as farmer, keep that role. If created as customer, keep customer.
                     await user.save();
                     return done(null, user);
                 } else {
-                    // Create a new user (defaults to customer)
+                    // Create a new user with the requested role
                     const newUser = new User({
                         googleId: profile.id,
                         name: profile.displayName,
                         email: profile.emails[0].value,
-                        role: 'customer' // All Google signups are customers by default
+                        role: role
                     });
                     await newUser.save();
                     return done(null, newUser);

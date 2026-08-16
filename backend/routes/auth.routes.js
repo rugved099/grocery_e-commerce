@@ -18,7 +18,14 @@ router.post('/register/farmer', registerFarmer);
 
 // --- Google Authentication Routes ---
 if (isGoogleConfigured) {
-    router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'], session: false }));
+    router.get('/google', (req, res, next) => {
+        const role = req.query.role || 'customer';
+        passport.authenticate('google', { 
+            scope: ['profile', 'email'], 
+            session: false,
+            state: role
+        })(req, res, next);
+    });
 
     // Google Auth Callback
     router.get('/google/callback', passport.authenticate('google', { session: false, failureRedirect: `${process.env.CLIENT_URL}?error=auth_failed` }), (req, res) => {

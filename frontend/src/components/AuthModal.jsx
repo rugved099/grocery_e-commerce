@@ -102,7 +102,7 @@ export default function AuthModal({ isOpen, onClose, onLoginSuccess, backendUrl 
 
                 {/* Google Sign-in Button */}
                 <div className="google-auth-container">
-                    <a href={`${BACKEND_ORIGIN}/api/auth/google`} className="google-btn-premium">
+                    <a href={`${BACKEND_ORIGIN}/api/auth/google?role=${activeTab}`} className="google-btn-premium">
                         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" alt="Google logo" />
                         Sign in with Google
                     </a>
